@@ -1,0 +1,6 @@
+[submodule "crm_core"]
+	path = crm_core
+	url = git@github.com:CrmProject2025/crm_core.git
+[submodule "FrontendReact"]
+	path = FrontendReact
+	url = git@github.com:CrmProject2025/FrontendReact.git
