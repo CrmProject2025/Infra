@@ -1,0 +1,19 @@
+services:
+  eureka-server:
+    build: ./eureka_server  # Собираем из Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8700:8700"
+    networks:
+      - backend
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8700/actuator/health" ]
+      interval: 10s
+      retries: 3
+      start_period: 30s
+
+
+networks:
+  backend:

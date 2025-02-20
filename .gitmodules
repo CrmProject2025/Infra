@@ -4,3 +4,9 @@
 [submodule "FrontendReact"]
 	path = FrontendReact
 	url = git@github.com:CrmProject2025/FrontendReact.git
+[submodule "eureka_server"]
+	path = eureka_server
+	url = git@github.com:CrmProject2025/eureka_server.git
+[submodule "email_service"]
+	path = email_service
+	url = git@github.com:CrmProject2025/email_service.git
