@@ -4,11 +4,11 @@ pipeline {
     environment {
 
         // Имя целевой ветки
-        TARGET_BRANCH = 'develop'
+        // TARGET_BRANCH = 'develop'
 
         // Переменные для GitHub API
-        GITHUB_REPO = 'CrmProject2025/Infra'
-        GITHUB_TOKEN = credentials('github-token') // Токен GitHub (добавьте в Jenkins Credentials)
+        // GITHUB_REPO = 'CrmProject2025/Infra'
+        // GITHUB_TOKEN = credentials('github-token') // Токен GitHub (добавьте в Jenkins Credentials)
     }
 
     stages {
