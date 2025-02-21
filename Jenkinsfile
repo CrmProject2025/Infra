@@ -27,18 +27,18 @@ pipeline {
         // }
 
         // Этап 2: Мердж ветки feature в develop
-        stage('Merge with Develop') {
-            steps {
-                script {
-                    // Переключаемся на ветку develop
-                    // sh "git checkout ${TARGET_BRANCH}"
-                    // Обновляем локальную ветку develop
-                    sh "git pull origin ${TARGET_BRANCH}"
-                    // Мерджим feature в develop
-                    sh "git merge origin/${env.CHANGE_BRANCH}"
-                }
-            }
-        }
+        // stage('Merge with Develop') {
+        //     steps {
+        //         script {
+        //             // Переключаемся на ветку develop
+        //             // sh "git checkout ${TARGET_BRANCH}"
+        //             // Обновляем локальную ветку develop
+        //             sh "git pull origin ${TARGET_BRANCH}"
+        //             // Мерджим feature в develop
+        //             sh "git merge origin/${env.CHANGE_BRANCH}"
+        //         }
+        //     }
+        // }
 
         // Этап 3: Сборка Docker-образов
         stage('Build Docker Images') {
