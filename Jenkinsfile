@@ -41,7 +41,7 @@ pipeline {
         // Этап 3: Сборка Docker-образов
         stage('Build Docker Images') {
             steps {
-                sh "docker-compose up -d --build"
+                bat "docker-compose up -d --build"
             }
         }
 
@@ -86,7 +86,7 @@ pipeline {
 
         always {
             // Остановка и удаление контейнеров
-            sh "docker-compose down"
+            bat "docker-compose down"
         }
         // cleanup {
         //     // Очистка workspace
