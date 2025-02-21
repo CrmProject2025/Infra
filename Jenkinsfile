@@ -15,22 +15,23 @@ pipeline {
 
     stages {
         // Этап 1: Получение кода из репозитория
-        stage('Checkout') {
-            steps {
-              sh '''
-                    git clone https://github.com/CrmProject2025/Infra.git
-                    cd Infra
-                    git checkout develop
-                '''
-            }
-        }
+        // stage('merge') {
+        //     steps {
+        //       sh '''
+        //             git clone https://github.com/CrmProject2025/Infra.git
+        //             cd Infra
+        //             git checkout develop
+        //         '''
+
+        //     }
+        // }
 
         // Этап 2: Мердж ветки feature в develop
         stage('Merge with Develop') {
             steps {
                 script {
                     // Переключаемся на ветку develop
-                    sh "git checkout ${TARGET_BRANCH}"
+                    // sh "git checkout ${TARGET_BRANCH}"
                     // Обновляем локальную ветку develop
                     sh "git pull origin ${TARGET_BRANCH}"
                     // Мерджим feature в develop
