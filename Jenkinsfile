@@ -55,6 +55,7 @@ pipeline {
         //     }
         // }
     }
+
        post {
         success {
             script {
@@ -81,7 +82,10 @@ pipeline {
             }
         }
 
-          always {
+
+    // Постобработка
+
+        always {
             // Остановка и удаление контейнеров
             sh "${DOCKER_COMPOSE} down"
         }
@@ -89,7 +93,8 @@ pipeline {
             // Очистка workspace
             cleanWs()
         }
-    }
+    
 
 
+}
 }
