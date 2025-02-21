@@ -9,7 +9,7 @@ pipeline {
         TARGET_BRANCH = 'develop'
 
         // Переменные для GitHub API
-        GITHUB_REPO = 'your-username/your-repo'
+        GITHUB_REPO = 'CrmProject2025/Infra'
         GITHUB_TOKEN = credentials('github-token') // Токен GitHub (добавьте в Jenkins Credentials)
     }
 
@@ -18,8 +18,8 @@ pipeline {
         stage('Checkout') {
             steps {
               sh '''
-                    git clone https://github.com/your-username/your-repo.git
-                    cd your-repo
+                    git clone https://github.com/CrmProject2025/Infra.git
+                    cd Infra
                     git checkout develop
                 '''
             }
