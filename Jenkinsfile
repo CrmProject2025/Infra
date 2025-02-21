@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // Путь к Docker Compose
-        DOCKER_COMPOSE = 'docker-compose'
 
         // Имя целевой ветки
         TARGET_BRANCH = 'develop'
@@ -43,7 +41,7 @@ pipeline {
         // Этап 3: Сборка Docker-образов
         stage('Build Docker Images') {
             steps {
-                sh "${DOCKER_COMPOSE} build"
+                sh "docker-compose up -d --build"
             }
         }
 
@@ -58,42 +56,42 @@ pipeline {
     }
 
        post {
-        success {
-            script {
-                // Отправляем комментарий в PR
-                sh """
-                    curl -X POST \
-                    -H "Authorization: token ${GITHUB_TOKEN}" \
-                    -H "Accept: application/vnd.github.v3+json" \
-                    -d '{"body": "🎉 Все тесты прошли успешно! PR готов к ручному слиянию."}' \
-                    "https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments"
-                """
-            }
-        }
-        failure {
-            script {
-                // Отправляем комментарий в PR, если тесты не прошли
-                sh """
-                    curl -X POST \
-                    -H "Authorization: token ${GITHUB_TOKEN}" \
-                    -H "Accept: application/vnd.github.v3+json" \
-                    -d '{"body": "❌ Тесты не прошли. Пожалуйста, проверьте ошибки."}' \
-                    "https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments"
-                """
-            }
-        }
+        // success {
+        //     script {
+        //         // Отправляем комментарий в PR
+        //         sh """
+        //             curl -X POST \
+        //             -H "Authorization: token ${GITHUB_TOKEN}" \
+        //             -H "Accept: application/vnd.github.v3+json" \
+        //             -d '{"body": "🎉 Все тесты прошли успешно! PR готов к ручному слиянию."}' \
+        //             "https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments"
+        //         """
+        //     }
+        // }
+        // failure {
+        //     script {
+        //         // Отправляем комментарий в PR, если тесты не прошли
+        //         sh """
+        //             curl -X POST \
+        //             -H "Authorization: token ${GITHUB_TOKEN}" \
+        //             -H "Accept: application/vnd.github.v3+json" \
+        //             -d '{"body": "❌ Тесты не прошли. Пожалуйста, проверьте ошибки."}' \
+        //             "https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments"
+        //         """
+        //     }
+        // }
 
 
     // Постобработка
 
         always {
             // Остановка и удаление контейнеров
-            sh "${DOCKER_COMPOSE} down"
+            sh "docker-compose down"
         }
-        cleanup {
-            // Очистка workspace
-            cleanWs()
-        }
+        // cleanup {
+        //     // Очистка workspace
+        //     cleanWs()
+        // }
     
 
 
