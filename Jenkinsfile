@@ -4,11 +4,11 @@ pipeline {
     // environment {
 
         // Имя целевой ветки
-        // TARGET_BRANCH = 'develop'
+        TARGET_BRANCH = 'develop'
 
         // Переменные для GitHub API
-        // GITHUB_REPO = 'CrmProject2025/Infra'
-        // GITHUB_TOKEN = credentials('github-token') // Токен GitHub (добавьте в Jenkins Credentials)
+        GITHUB_REPO = 'CrmProject2025/Infra'
+        GITHUB_TOKEN = credentials('github-token') // Токен GitHub (добавьте в Jenkins Credentials)
     // }
 
     stages {
@@ -25,18 +25,18 @@ pipeline {
         // }
 
         // Этап 2: Мердж ветки feature в develop
-        // stage('Merge with Develop') {
-        //     steps {
-        //         script {
-        //             // Переключаемся на ветку develop
-        //             // sh "git checkout ${TARGET_BRANCH}"
-        //             // Обновляем локальную ветку develop
-        //             sh "git pull origin ${TARGET_BRANCH}"
-        //             // Мерджим feature в develop
-        //             sh "git merge origin/${env.CHANGE_BRANCH}"
-        //         }
-        //     }
-        // }
+        stage('Merge with Develop') {
+            steps {
+                script {
+                    // Переключаемся на ветку develop
+                    // sh "git checkout ${TARGET_BRANCH}"
+                    // Обновляем локальную ветку develop
+                    bat "git pull origin ${TARGET_BRANCH}"
+                    // Мерджим feature в develop
+                    bat "git merge origin/${env.CHANGE_BRANCH}"
+                }
+            }
+        }
 
         // Этап 3: Сборка Docker-образов
         stage('Build Docker Images') {
@@ -56,30 +56,32 @@ pipeline {
     }
 
        post {
-        // success {
-        //     script {
-        //         // Отправляем комментарий в PR
-        //         sh """
-        //             curl -X POST \
-        //             -H "Authorization: token ${GITHUB_TOKEN}" \
-        //             -H "Accept: application/vnd.github.v3+json" \
-        //             -d '{"body": "🎉 Все тесты прошли успешно! PR готов к ручному слиянию."}' \
-        //             "https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments"
-        //         """
-        //     }
-        // }
-        // failure {
-        //     script {
-        //         // Отправляем комментарий в PR, если тесты не прошли
-        //         sh """
-        //             curl -X POST \
-        //             -H "Authorization: token ${GITHUB_TOKEN}" \
-        //             -H "Accept: application/vnd.github.v3+json" \
-        //             -d '{"body": "❌ Тесты не прошли. Пожалуйста, проверьте ошибки."}' \
-        //             "https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments"
-        //         """
-        //     }
-        // }
+        success {
+            script {
+                // Отправляем комментарий в PR через PowerShell
+                bat """
+                    powershell -Command "
+                    Invoke-RestMethod -Uri 'https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments' \
+                    -Method POST \
+                    -Headers @{Authorization='token ${GITHUB_TOKEN}'; Accept='application/vnd.github.v3+json'} \
+                    -Body '{\"body\": \"🎉 Все тесты прошли успешно! PR готов к ручному слиянию.\"}'
+                    "
+                """
+            }
+        }
+       failure {
+            script {
+                // Отправляем комментарий в PR через PowerShell
+                bat """
+                    powershell -Command "
+                    Invoke-RestMethod -Uri 'https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments' \
+                    -Method POST \
+                    -Headers @{Authorization='token ${GITHUB_TOKEN}'; Accept='application/vnd.github.v3+json'} \
+                    -Body '{\"body\": \"❌ Тесты не прошли. Пожалуйста, проверьте ошибки.\"}'
+                    "
+                """
+            }
+       }
 
 
     // Постобработка
@@ -88,10 +90,10 @@ pipeline {
             // Остановка и удаление контейнеров
             bat "docker-compose down"
         }
-        // cleanup {
-        //     // Очистка workspace
-        //     cleanWs()
-        // }
+        cleanup {
+            // Очистка workspace
+            cleanWs()
+        }
     
 
 
