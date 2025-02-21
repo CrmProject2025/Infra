@@ -54,6 +54,7 @@ pipeline {
         //         sh "${DOCKER_COMPOSE} exec -T user-service ./mvnw test"
         //     }
         // }
+    }
 
        post {
         success {
@@ -80,10 +81,10 @@ pipeline {
                 """
             }
         }
-    }
+
 
     // Постобработка
-    post {
+
         always {
             // Остановка и удаление контейнеров
             sh "${DOCKER_COMPOSE} down"
@@ -92,6 +93,8 @@ pipeline {
             // Очистка workspace
             cleanWs()
         }
-    }
+    
+
+
 }
 }
