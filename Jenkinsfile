@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    environment {
+    // environment {
 
         // Имя целевой ветки
         // TARGET_BRANCH = 'develop'
@@ -9,7 +9,7 @@ pipeline {
         // Переменные для GitHub API
         // GITHUB_REPO = 'CrmProject2025/Infra'
         // GITHUB_TOKEN = credentials('github-token') // Токен GitHub (добавьте в Jenkins Credentials)
-    }
+    // }
 
     stages {
         // Этап 1: Получение кода из репозитория
