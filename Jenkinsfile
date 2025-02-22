@@ -8,7 +8,6 @@ pipeline {
 
         // Переменные для GitHub API
         GITHUB_REPO = 'CrmProject2025/Infra'
-        GITHUB_TOKEN = credentials('github-token') // Токен GitHub (добавьте в Jenkins Credentials)
     }
 
     stages {
@@ -16,9 +15,7 @@ pipeline {
         // stage('merge') {
         //     steps {
         //       sh '''
-        //             git clone https://github.com/CrmProject2025/Infra.git
-        //             cd Infra
-        //             git checkout develop
+        //             выполняет jenkins mulripipiline автоматически
         //         '''
 
         //     }
@@ -39,19 +36,16 @@ pipeline {
         stage('Fetch Branches') {
             steps {
                 bat "git fetch origin" // Обновляем информацию о ветках
-                bat "git fetch origin ${env.CHANGE_BRANCH}"
-                bat "git checkout origin ${env.CHANGE_BRANCH}"
-                bat "git checkout origin ${TARGET_BRANCH}"
-
             }
         }
 
         // Этап 2: Мердж ветки feature в develop
+        // не может смержить, не видит ветку feature, что-то поменял здесь, но не тестировал
         stage('Merge with Develop') {
             steps {
                 script {
                     // Переключаемся на ветку develop
-                    // sh "git checkout ${TARGET_BRANCH}"
+                    bat "git checkout ${TARGET_BRANCH}"
                     // Обновляем локальную ветку develop
                     bat "git pull origin ${TARGET_BRANCH}"
                     // Мерджим feature в develop
@@ -67,7 +61,7 @@ pipeline {
             }
         }
 
-        // Этап 4: Запуск тестов
+        // Этап 4: Запуск тестов, автоматически запускаются с gradle, maven, то есть при сборке docker
         // stage('Run Tests') {
         //     steps {
         //         sh "${DOCKER_COMPOSE} up -d"
@@ -85,6 +79,7 @@ pipeline {
 
         always {
             // Остановка и удаление контейнеров
+            // нужно делать только если контейнеры поднялись
             bat "docker-compose down"
         }
         cleanup {
