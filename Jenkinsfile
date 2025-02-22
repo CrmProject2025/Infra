@@ -8,7 +8,6 @@ pipeline {
 
         // Переменные для GitHub API
         GITHUB_REPO = 'CrmProject2025/Infra'
-        GITHUB_TOKEN = credentials('github-token') // Токен GitHub (добавьте в Jenkins Credentials)
     }
 
     stages {
@@ -16,20 +15,37 @@ pipeline {
         // stage('merge') {
         //     steps {
         //       sh '''
-        //             git clone https://github.com/CrmProject2025/Infra.git
-        //             cd Infra
-        //             git checkout develop
+        //             выполняет jenkins mulripipiline автоматически
         //         '''
 
         //     }
         // }
+        stage('Check Branch') {
+            steps {
+                script {
+                    // Проверяем, что это ветка develop или PR в develop
+                    if (env.BRANCH_NAME != 'develop' && env.CHANGE_TARGET != 'develop') {
+                        echo "Pipeline запущен для ветки ${env.BRANCH_NAME}. Пропускаем."
+                        currentBuild.result = 'SUCCESS' // Пропускаем сборку
+                        return
+                    }
+                }
+            }
+        }
+
+        stage('Fetch Branches') {
+            steps {
+                bat "git fetch origin" // Обновляем информацию о ветках
+            }
+        }
 
         // Этап 2: Мердж ветки feature в develop
+        // не может смержить, не видит ветку feature, что-то поменял здесь, но не тестировал
         stage('Merge with Develop') {
             steps {
                 script {
                     // Переключаемся на ветку develop
-                    // sh "git checkout ${TARGET_BRANCH}"
+                    bat "git checkout ${TARGET_BRANCH}"
                     // Обновляем локальную ветку develop
                     bat "git pull origin ${TARGET_BRANCH}"
                     // Мерджим feature в develop
@@ -45,49 +61,25 @@ pipeline {
             }
         }
 
-        // Этап 4: Запуск тестов
+        // Этап 4: Запуск тестов, автоматически запускаются с gradle, maven, то есть при сборке docker
         // stage('Run Tests') {
         //     steps {
         //         sh "${DOCKER_COMPOSE} up -d"
         //         // Пример: запуск тестов для сервиса "user-service"
         //         sh "${DOCKER_COMPOSE} exec -T user-service ./mvnw test"
-        //     }
+        //     }s
         // }
     }
 
        post {
-        success {
-            script {
-                // Отправляем комментарий в PR через PowerShell
-                bat """
-                    powershell -Command "
-                    Invoke-RestMethod -Uri 'https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments' \
-                    -Method POST \
-                    -Headers @{Authorization='token ${GITHUB_TOKEN}'; Accept='application/vnd.github.v3+json'} \
-                    -Body '{\"body\": \"🎉 Все тесты прошли успешно! PR готов к ручному слиянию.\"}'
-                    "
-                """
-            }
-        }
-       failure {
-            script {
-                // Отправляем комментарий в PR через PowerShell
-                bat """
-                    powershell -Command "
-                    Invoke-RestMethod -Uri 'https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments' \
-                    -Method POST \
-                    -Headers @{Authorization='token ${GITHUB_TOKEN}'; Accept='application/vnd.github.v3+json'} \
-                    -Body '{\"body\": \"❌ Тесты не прошли. Пожалуйста, проверьте ошибки.\"}'
-                    "
-                """
-            }
-       }
+       
 
 
     // Постобработка
 
         always {
             // Остановка и удаление контейнеров
+            // нужно делать только если контейнеры поднялись
             bat "docker-compose down"
         }
         cleanup {
