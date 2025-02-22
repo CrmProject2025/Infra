@@ -40,8 +40,8 @@ pipeline {
             steps {
                 bat "git fetch origin" // Обновляем информацию о ветках
                 bat "git fetch origin ${env.CHANGE_BRANCH}"
-                bat "git checkout ${env.CHANGE_BRANCH}"
-                bat "git checkout ${TARGET_BRANCH}"
+                bat "git checkout origin ${env.CHANGE_BRANCH}"
+                bat "git checkout origin ${TARGET_BRANCH}"
 
             }
         }
