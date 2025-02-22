@@ -51,7 +51,7 @@ pipeline {
         //         sh "${DOCKER_COMPOSE} up -d"
         //         // Пример: запуск тестов для сервиса "user-service"
         //         sh "${DOCKER_COMPOSE} exec -T user-service ./mvnw test"
-        //     }
+        //     }s
         // }
     }
 
