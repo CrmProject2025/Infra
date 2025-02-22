@@ -24,6 +24,12 @@ pipeline {
         //     }
         // }
 
+        stage('Fetch Branches') {
+            steps {
+                bat "git fetch origin" // Обновляем информацию о ветках
+            }
+        }
+
         // Этап 2: Мердж ветки feature в develop
         stage('Merge with Develop') {
             steps {
