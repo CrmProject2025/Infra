@@ -23,6 +23,18 @@ pipeline {
 
         //     }
         // }
+        stage('Check Branch') {
+            steps {
+                script {
+                    // Проверяем, что это ветка develop или PR в develop
+                    if (env.BRANCH_NAME != 'develop' && env.CHANGE_TARGET != 'develop') {
+                        echo "Pipeline запущен для ветки ${env.BRANCH_NAME}. Пропускаем."
+                        currentBuild.result = 'SUCCESS' // Пропускаем сборку
+                        return
+                    }
+                }
+            }
+        }
 
         stage('Fetch Branches') {
             steps {
@@ -62,32 +74,7 @@ pipeline {
     }
 
        post {
-        success {
-            script {
-                // Отправляем комментарий в PR через PowerShell
-                bat """
-                    powershell -Command "
-                    Invoke-RestMethod -Uri 'https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments' \
-                    -Method POST \
-                    -Headers @{Authorization='token ${GITHUB_TOKEN}'; Accept='application/vnd.github.v3+json'} \
-                    -Body '{\"body\": \"🎉 Все тесты прошли успешно! PR готов к ручному слиянию.\"}'
-                    "
-                """
-            }
-        }
-       failure {
-            script {
-                // Отправляем комментарий в PR через PowerShell
-                bat """
-                    powershell -Command "
-                    Invoke-RestMethod -Uri 'https://api.github.com/repos/${GITHUB_REPO}/issues/${env.CHANGE_ID}/comments' \
-                    -Method POST \
-                    -Headers @{Authorization='token ${GITHUB_TOKEN}'; Accept='application/vnd.github.v3+json'} \
-                    -Body '{\"body\": \"❌ Тесты не прошли. Пожалуйста, проверьте ошибки.\"}'
-                    "
-                """
-            }
-       }
+       
 
 
     // Постобработка
