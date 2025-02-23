@@ -10,3 +10,6 @@
 [submodule "email_service"]
 	path = email_service
 	url = git@github.com:CrmProject2025/email_service.git
+[submodule "gateway_service"]
+	path = gateway_service
+	url = git@github.com:CrmProject2025/gateway_service.git
