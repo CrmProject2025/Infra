@@ -1,4 +1,4 @@
-Архитектура и технологии:
+## Архитектура и технологии:
 - 5 микросервисов на spring boot. Управление - Spring Cloud.
 - Аутентификация по jwt токену.
 - liquibase миграции для базы данных.
@@ -8,5 +8,6 @@
 - Панель администратора.
 - Junit и интеграционные тесты.
 
-Схема базы данных:
-[myb.pdf](https://github.com/user-attachments/files/19009835/myb.pdf)
+## Схема базы данных:
+
+![myb_page-0001](https://github.com/user-attachments/assets/657bdca1-48c8-4621-9985-09e67d2bc9b4)
